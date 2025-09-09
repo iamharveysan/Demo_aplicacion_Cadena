@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cadena de Ahorro – Demo Local (v3 con PDF)</title>
+<title>Cadena de Ahorro – Demo Local (v3.1)</title>
 <style>
   :root{
     --bg:#0f1115; --panel:#151922; --panel-2:#1b2130;
@@ -17,13 +17,15 @@
     background:linear-gradient(180deg,#0c0f14,#0e1218 40%,#0f1115 100%); color:var(--text);
   }
   header{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 18px; background:#0c0f14; border-bottom:1px solid #1f2633; position:sticky; top:0; z-index:5;
+    display:flex; align-items:center; gap:10px; justify-content:space-between;
+    padding:14px 18px; background:#0c0f14; border-bottom:1px solid #1f2633; position:sticky; top:0; z-index:30;
   }
-  header h1{font-size:18px; margin:0; letter-spacing:.4px}
+  header h1{font-size:18px; margin:0; letter-spacing:.4px; display:flex; align-items:center; gap:8px}
   .tag{padding:4px 8px; border:1px solid #263044; border-radius:999px; color:var(--muted); font-size:12px}
   .wrap{display:flex; min-height:calc(100% - 56px)}
-  nav{ width:250px; background:var(--panel); border-right:1px solid #212839; padding:12px; position:sticky; top:56px; height:calc(100vh - 56px); overflow:auto; }
+  nav{
+    width:250px; background:var(--panel); border-right:1px solid #212839; padding:12px; position:sticky; top:56px; height:calc(100vh - 56px); overflow:auto; z-index:25;
+  }
   nav .group{margin-bottom:18px}
   nav h4{margin:10px 8px; color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.8px}
   .navbtn{
@@ -41,6 +43,7 @@
   .col{flex:1; min-width:260px}
   label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
   input, select, textarea{ width:100%; background:var(--panel-2); border:1px solid #263147; color:var(--text); border-radius:10px; padding:10px 12px; outline:none; }
+  input[type="date"]{padding:9px 10px}
   .grid{ width:100%; border-collapse:collapse; overflow:auto; border-radius:12px; border:1px solid #24314a;}
   .grid th, .grid td{ padding:10px; border-bottom:1px solid #212a3f; text-align:left; font-size:14px}
   .grid thead th{ position:sticky; top:0; background:#121622; z-index:1}
@@ -60,6 +63,26 @@
   .view.active{display:block; opacity:1; transform:none}
   .badge{background:#18243a; border:1px solid #2b3a5a; padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted)}
   .mono{font-family: ui-monospace, Menlo, Consolas, 'Courier New', monospace;}
+  .scroll-x{overflow:auto}
+
+  /* Mobile responsive nav */
+  #btnMenu{ display:none }
+  #backdrop{ display:none }
+  @media (max-width: 980px){
+    #btnMenu{ display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:10px; }
+    nav{
+      position:fixed; left:0; top:56px; height:calc(100vh - 56px); transform:translateX(-100%); transition:transform .25s ease;
+      width:80vw; max-width:320px; box-shadow: 0 18px 40px rgba(0,0,0,.45);
+    }
+    body.show-nav nav{ transform:translateX(0) }
+    #backdrop{
+      display:block; position:fixed; inset:56px 0 0 0; background:rgba(0,0,0,.45); backdrop-filter: blur(2px);
+      opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:20;
+    }
+    body.show-nav #backdrop{ opacity:1; pointer-events:auto }
+    main{ padding:14px }
+    .col{min-width:100%}
+  }
 </style>
 
 <!-- jsPDF + autoTable (CDN) -->
@@ -68,7 +91,10 @@
 </head>
 <body>
   <header>
-    <h1>Cadena de Ahorro <span class="tag">Demo local v3</span></h1>
+    <div style="display:flex; align-items:center; gap:8px">
+      <button class="btn ghost" id="btnMenu">☰</button>
+      <h1>Cadena de Ahorro <span class="tag">v3.1</span></h1>
+    </div>
     <div class="toolbar">
       <button class="btn ghost" id="btnDemo">Cargar demo</button>
       <button class="btn ghost" id="btnExport">Exportar JSON</button>
@@ -77,6 +103,8 @@
       <button class="btn warn" id="btnReset">Reiniciar</button>
     </div>
   </header>
+
+  <div id="backdrop"></div>
 
   <div class="wrap">
     <nav>
@@ -111,7 +139,7 @@
       <!-- INICIO -->
       <section class="panel view active" id="view-inicio">
         <h2 style="margin-top:0">Bienvenido</h2>
-        <p>Demostración local con exportación a PDF.</p>
+        <p>Demostración local con PDF y navegación móvil.</p>
       </section>
 
       <!-- INTEGRANTES -->
@@ -161,7 +189,7 @@
         <div class="row">
           <div class="col"><label>Nombre de la cadena</label><input id="p_nombre" placeholder="Ej: S20x8"></div>
           <div class="col"><label>Periodicidad</label>
-            <select id="p_periodicidad"><option>Diario</option><option selected>Semanal</option><option>Quincenal</option><option>Mensual</option></select>
+            <select id="p_periodicidad"><option>Diario</option><option>Semanal</option><option>Quincenal</option><option>Mensual</option></select>
           </div>
           <div class="col"><label>Fecha de inicio</label><input id="p_inicio" type="date"></div>
           <div class="col"><label># de recaudos</label><input id="p_nRecaudos" type="number" min="1" value="10"></div>
@@ -171,6 +199,9 @@
         <div class="row">
           <div class="col"><div class="kpi"><span class="pill">Ahorro total</span> <strong id="kpiAhorro">$0</strong></div></div>
           <div class="col"><div class="kpi"><span class="pill">Entrega</span> <strong id="kpiEntrega">$0</strong></div></div>
+        </div>
+        <div class="toolbar" style="margin-top:12px">
+          <button class="btn success" id="btnGuardarParametros">Guardar parámetros</button>
         </div>
       </section>
 
@@ -211,7 +242,7 @@
         </div>
       </section>
 
-      <div class="footer">by Har_San10252563 — datos guardados localmente</div>
+      <div class="footer">By Har_San032564 JS — datos guardados localmente</div>
     </main>
   </div>
 
@@ -228,8 +259,15 @@ const state = {
   parametros: { nombre:'', periodicidad:'Semanal', inicio:'', nRecaudos:10, cuota:20000, admin:10000 },
   pagos: {}
 };
-function save(){ localStorage.setItem('cadena_demo_v3', JSON.stringify(state)); refreshKpis(); }
-function load(){ const raw = localStorage.getItem('cadena_demo_v3'); if(raw){ try{ Object.assign(state, JSON.parse(raw)); }catch(e){} }}
+function save(){ localStorage.setItem('cadena_demo_v31', JSON.stringify(state)); refreshKpis(); }
+function load(){ const raw = localStorage.getItem('cadena_demo_v31'); if(raw){ try{ Object.assign(state, JSON.parse(raw)); }catch(e){} }}
+
+// ---- responsive nav ----
+const toggleNav = () => document.body.classList.toggle('show-nav');
+document.addEventListener('click', (e)=>{
+  if(e.target.id==='btnMenu'){ toggleNav(); }
+  if(e.target.id==='backdrop'){ toggleNav(); }
+});
 
 // ---- navigation ----
 function show(view){
@@ -237,6 +275,7 @@ function show(view){
   $('#view-'+view).classList.add('active');
   $$('.navbtn').forEach(b=> b.classList.toggle('active', b.dataset.view===view));
   document.querySelector('main').scrollIntoView({behavior:'smooth', block:'start'});
+  document.body.classList.remove('show-nav');
 }
 $$('.navbtn').forEach(b=> b.addEventListener('click', ()=> show(b.dataset.view)));
 
@@ -315,9 +354,11 @@ function saveIntegrante(){
   renderIntegrantes(); renderProgramacion(); renderRegistro();
   show('integrantes'); save();
 }
-$('#btnAddIntegrante').addEventListener('click', addIntegrante);
-$('#btnSaveInt').addEventListener('click', saveIntegrante);
-$('#btnCancelInt').addEventListener('click', ()=> show('integrantes'));
+document.addEventListener('click', (e)=>{
+  if(e.target.id==='btnAddIntegrante') addIntegrante();
+  if(e.target.id==='btnSaveInt') saveIntegrante();
+  if(e.target.id==='btnCancelInt') show('integrantes');
+});
 
 // ---- parámetros ----
 function renderParametros(){
@@ -338,6 +379,7 @@ function guardarParametros(){
   p.nRecaudos = parseInt($('#p_nRecaudos').value||'10',10);
   p.cuota = nnum($('#p_cuota').value);
   p.admin = nnum($('#p_admin').value);
+  // ajustar pagos al nuevo tamaño
   for(const key of Object.keys(state.pagos)){
     const arr = state.pagos[key] || [];
     const n = p.nRecaudos;
@@ -349,7 +391,12 @@ function guardarParametros(){
   }
   renderProgramacion(); renderRegistro(); calcKPIs(); save();
 }
-$('#btnGuardarParametros')?.addEventListener('click', guardarParametros);
+document.addEventListener('click', (e)=>{
+  if(e.target.id==='btnGuardarParametros') guardarParametros();
+});
+['#p_nombre','#p_periodicidad','#p_inicio','#p_nRecaudos','#p_cuota','#p_admin']
+  .forEach(sel => { document.addEventListener('change', (e)=>{ if('#'+e.target.id===sel) guardarParametros(); }); });
+
 function calcKPIs(){
   const p = state.parametros;
   const ahorro = p.nRecaudos * p.cuota;
@@ -368,7 +415,7 @@ function fechas(){
   const p = state.parametros; if(!p.inicio) return [];
   const base = new Date(p.inicio+'T00:00:00'); const out=[];
   for(let i=0;i<p.nRecaudos;i++){
-    let di=base;
+    let di=new Date(base);
     if(p.periodicidad==='Diario') di = addDays(base,i);
     if(p.periodicidad==='Semanal') di = addWeeks(base,i);
     if(p.periodicidad==='Quincenal') di = addDays(base, i*15);
@@ -387,9 +434,11 @@ function renderProgramacion(){
     body.appendChild(tr);
   });
 }
-$('#btnGenerarProg').addEventListener('click', ()=>{
-  const p=state.parametros; if(!p.inicio){ alert('Define fecha de inicio en Parámetros.'); show('parametros'); return; }
-  renderProgramacion();
+document.addEventListener('click', (e)=>{
+  if(e.target.id==='btnGenerarProg'){
+    const p=state.parametros; if(!p.inicio){ alert('Define fecha de inicio en Parámetros.'); show('parametros'); return; }
+    renderProgramacion();
+  }
 });
 
 // ---- registro ----
@@ -414,15 +463,17 @@ function togglePago(key, idx){
   const p = state.parametros; const arr = state.pagos[key] || Array(p.nRecaudos).fill(0);
   arr[idx] = arr[idx]>0?0:p.cuota; state.pagos[key]=arr; renderRegistro(); save();
 }
-$('#btnMarcarTodo').addEventListener('click', ()=>{
-  const p = state.parametros; const fs = fechas(); const today = new Date();
-  state.integrantes.forEach(it=>{
-    const key = it.cc; if(!state.pagos[key]) state.pagos[key]=Array(p.nRecaudos).fill(0);
-    let k = fs.findIndex(d => fmtDate(d) === fmtDate(today));
-    if(k<0) k = state.pagos[key].findIndex(v=>v===0);
-    if(k>=0) state.pagos[key][k] = p.cuota;
-  });
-  renderRegistro(); save();
+document.addEventListener('click', (e)=>{
+  if(e.target.id==='btnMarcarTodo'){
+    const p = state.parametros; const fs = fechas(); const today = new Date();
+    state.integrantes.forEach(it=>{
+      const key = it.cc; if(!state.pagos[key]) state.pagos[key]=Array(p.nRecaudos).fill(0);
+      let k = fs.findIndex(d => fmtDate(d) === fmtDate(today));
+      if(k<0) k = state.pagos[key].findIndex(v=>v===0);
+      if(k>=0) state.pagos[key][k] = p.cuota;
+    });
+    renderRegistro(); save();
+  }
 });
 
 // ---- KPIs ----
@@ -448,7 +499,7 @@ function importJSON(){
 }
 function resetAll(){
   if(!confirm('¿Reiniciar todo?')) return;
-  localStorage.removeItem('cadena_demo_v3'); state.integrantes=[]; state.parametros={ nombre:'', periodicidad:'Semanal', inicio:'', nRecaudos:10, cuota:20000, admin:10000 }; state.pagos={};
+  localStorage.removeItem('cadena_demo_v31'); state.integrantes=[]; state.parametros={ nombre:'', periodicidad:'Semanal', inicio:'', nRecaudos:10, cuota:20000, admin:10000 }; state.pagos={};
   renderAll(); save();
 }
 
@@ -527,11 +578,11 @@ async function exportPDF(){
     if(!p.inicio) return [];
     const base = new Date(p.inicio+'T00:00:00'); const out=[];
     for(let i=0;i<p.nRecaudos;i++){
-      let di=base;
-      if(p.periodicidad==='Diario'){ di=new Date(base); di.setDate(base.getDate()+i); }
-      if(p.periodicidad==='Semanal'){ di=new Date(base); di.setDate(base.getDate()+i*7); }
-      if(p.periodicidad==='Quincenal'){ di=new Date(base); di.setDate(base.getDate()+i*15); }
-      if(p.periodicidad==='Mensual'){ di=new Date(base); di.setMonth(base.getMonth()+i); }
+      let di=new Date(base);
+      if(p.periodicidad==='Diario'){ di.setDate(base.getDate()+i); }
+      if(p.periodicidad==='Semanal'){ di.setDate(base.getDate()+i*7); }
+      if(p.periodicidad==='Quincenal'){ di.setDate(base.getDate()+i*15); }
+      if(p.periodicidad==='Mensual'){ di.setMonth(base.getMonth()+i); }
       const y=di.getFullYear(), m=String(di.getMonth()+1).padStart(2,'0'), d=String(di.getDate()).padStart(2,'0');
       out.push(`${y}-${m}-${d}`);
     } return out;
@@ -552,13 +603,17 @@ async function exportPDF(){
   const nombre = (p.nombre || 'cadena').toLowerCase().replace(/\s+/g,'_');
   doc.save(`reporte_${nombre}.pdf`);
 }
-document.getElementById('btnPDF').addEventListener('click', exportPDF);
+document.addEventListener('click', (e)=>{
+  if(e.target.id==='btnPDF') exportPDF();
+});
 
 // ---- binds topbar ----
-$('#btnExport').addEventListener('click', exportJSON);
-$('#btnImport').addEventListener('click', importJSON);
-$('#btnReset').addEventListener('click', resetAll);
-$('#btnDemo').addEventListener('click', cargarDemo);
+document.addEventListener('click', (e)=>{
+  if(e.target.id==='btnExport') exportJSON();
+  if(e.target.id==='btnImport') importJSON();
+  if(e.target.id==='btnReset') resetAll();
+  if(e.target.id==='btnDemo') cargarDemo();
+});
 
 // ---- render ----
 function renderAll(){ renderIntegrantes(); renderParametros(); renderProgramacion(); renderRegistro(); }
