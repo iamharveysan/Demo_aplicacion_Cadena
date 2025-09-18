@@ -6,64 +6,111 @@
 <title>Cadena de Ahorro – Demo Local (v3.1)</title>
 <style>
   :root{
-    --bg:#0f1115; --panel:#151922; --panel-2:#1b2130;
-    --muted:#8a93a6; --text:#e9eef7; --accent:#6dd6ff; --accent-2:#8bffb0;
-    --danger:#ff6b6b; --warning:#ffb86c;
+    /* Paleta clara y suave */
+    --bg:#f7fafc; 
+    --panel:#ffffff; 
+    --panel-2:#ffffff;
+    --ink:#1f2937; 
+    --muted:#64748b; 
+    --text:#111827;
+    --line:#e5e7eb;
+
+    --accent:#5aa7ff; 
+    --accent-2:#7dd3fc;
+
+    --danger:#ef4444; 
+    --warning:#f59e0b;
+
+    --btn:#eef2f7; 
+    --btn-border:#d7dee8;
+    --btn-grad-1:#eaf2fb; 
+    --btn-grad-2:#e4eef9;
+    --kpi-dash:#dbe7fb;
   }
+
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial,'Noto Sans';
-    background:linear-gradient(180deg,#0c0f14,#0e1218 40%,#0f1115 100%); color:var(--text);
+    background:var(--bg); color:var(--ink);
   }
+
+  /* Header claro */
   header{
     display:flex; align-items:center; gap:10px; justify-content:space-between;
-    padding:14px 18px; background:#0c0f14; border-bottom:1px solid #1f2633; position:sticky; top:0; z-index:30;
+    padding:14px 18px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:30;
   }
-  header h1{font-size:18px; margin:0; letter-spacing:.4px; display:flex; align-items:center; gap:8px}
-  .tag{padding:4px 8px; border:1px solid #263044; border-radius:999px; color:var(--muted); font-size:12px}
+  header h1{font-size:18px; margin:0; letter-spacing:.2px; display:flex; align-items:center; gap:8px; color:var(--text)}
+  .tag{padding:4px 8px; border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:12px; background:#fafafa}
+
   .wrap{display:flex; min-height:calc(100% - 56px)}
+
+  /* Sidebar claro */
   nav{
-    width:250px; background:var(--panel); border-right:1px solid #212839; padding:12px; position:sticky; top:56px; height:calc(100vh - 56px); overflow:auto; z-index:25;
+    width:250px; background:var(--panel); border-right:1px solid var(--line); padding:12px; position:sticky; top:56px; height:calc(100vh - 56px); overflow:auto; z-index:25;
   }
   nav .group{margin-bottom:18px}
-  nav h4{margin:10px 8px; color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.8px}
+  nav h4{margin:10px 8px; color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.6px}
   .navbtn{
-    width:100%; text-align:left; padding:10px 12px; margin:6px 0; background:transparent; color:var(--text);
-    border:1px solid #253047; border-radius:10px; cursor:pointer; position:relative; overflow:hidden;
+    width:100%; text-align:left; padding:10px 12px; margin:6px 0; background:#f9fbfd; color:var(--text);
+    border:1px solid var(--btn-border); border-radius:10px; cursor:pointer; position:relative; overflow:hidden;
   }
   .navbtn::after{ content:""; position:absolute; inset:auto auto 0 0; width:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); transition:width .25s ease; }
-  .navbtn.active{background:linear-gradient(180deg,#182033,#161d2b); border-color:#304064}
+  .navbtn.active{background:#eef4ff; border-color:#cfe0ff}
   .navbtn.active::after{width:100%}
+
   main{flex:1; padding:18px; max-width:1400px; margin:0 auto}
-  .panel{ background:var(--panel); border:1px solid #20283a; border-radius:14px; padding:16px; margin-bottom:16px;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset, 0 6px 24px rgba(0,0,0,.35);
+
+  /* Tarjetas/paneles claros */
+  .panel{ 
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px;
+    box-shadow: 0 4px 14px rgba(17,24,39,0.04);
   }
+
   .row{display:flex; gap:12px; flex-wrap:wrap}
   .col{flex:1; min-width:260px}
   label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
-  input, select, textarea{ width:100%; background:var(--panel-2); border:1px solid #263147; color:var(--text); border-radius:10px; padding:10px 12px; outline:none; }
+
+  /* Controles */
+  input, select, textarea{ 
+    width:100%; background:var(--panel-2); border:1px solid var(--btn-border); color:var(--text); 
+    border-radius:10px; padding:10px 12px; outline:none; 
+  }
+  input:focus, select:focus, textarea:focus{
+    border-color:#b1cdfc; box-shadow:0 0 0 3px rgba(59,130,246,.12);
+  }
   input[type="date"]{padding:9px 10px}
-  .grid{ width:100%; border-collapse:collapse; overflow:auto; border-radius:12px; border:1px solid #24314a;}
-  .grid th, .grid td{ padding:10px; border-bottom:1px solid #212a3f; text-align:left; font-size:14px}
-  .grid thead th{ position:sticky; top:0; background:#121622; z-index:1}
-  .btn{ appearance:none; border:none; background:#22304a; color:var(--text); padding:10px 14px; border-radius:10px; cursor:pointer; border:1px solid #2c3c5a; }
-  .btn.primary{background:linear-gradient(180deg,#1e3a55,#1d3149); border-color:#2c4a6b}
-  .btn.ghost{background:transparent}
-  .btn.success{background:#1f3a2a; border-color:#2b5a3e}
-  .btn.danger{background:#3a1f27; border-color:#5a2b38}
-  .btn.warn{background:#3a2c1f; border-color:#5a412b}
+
+  /* Tabla */
+  .grid{ width:100%; border-collapse:collapse; overflow:auto; border-radius:12px; border:1px solid var(--line); background:#fff;}
+  .grid th, .grid td{ padding:10px; border-bottom:1px solid var(--line); text-align:left; font-size:14px; color:var(--ink)}
+  .grid thead th{ position:sticky; top:0; background:#f1f5f9; z-index:1}
+
+  /* Botones suaves */
+  .btn{ appearance:none; border:1px solid var(--btn-border); background:var(--btn); color:var(--ink); padding:10px 14px; border-radius:10px; cursor:pointer; }
+  .btn.primary{background:linear-gradient(180deg,var(--btn-grad-1),var(--btn-grad-2)); border-color:#cde0f9}
+  .btn.ghost{background:#ffffff}
+  .btn.success{background:#e9f8ef; border-color:#cdebd8; color:#14532d}
+  .btn.danger{background:#fdecec; border-color:#f8caca; color:#7f1d1d}
+  .btn.warn{background:#fff6e7; border-color:#fde3b5; color:#7c2d12}
+
   .toolbar{display:flex; gap:8px; flex-wrap:wrap}
-  .kpi{ display:flex; gap:10px; align-items:center; padding:12px; background:var(--panel); border:1px dashed #2a3856; border-radius:12px; color:var(--muted) }
+
+  /* KPIs */
+  .kpi{ display:flex; gap:10px; align-items:center; padding:12px; background:#fafcff; border:1px dashed var(--kpi-dash); border-radius:12px; color:var(--muted) }
   .kpi strong{font-size:18px; color:var(--text)}
-  .pill{font-size:12px; padding:4px 8px; border:1px solid #2b3856; border-radius:999px; color:var(--muted)}
+  .pill{font-size:12px; padding:4px 8px; border:1px solid var(--btn-border); border-radius:999px; color:var(--muted); background:#fff}
   .help{color:var(--muted); font-size:12px; margin-top:8px}
-  .footer{opacity:.7; font-size:12px; text-align:center; padding:12px}
+  .footer{opacity:.7; font-size:12px; text-align:center; padding:12px; color:#6b7280}
+
   .view{display:none; opacity:0; transform: translateY(6px); transition: opacity .18s ease, transform .18s ease}
   .view.active{display:block; opacity:1; transform:none}
-  .badge{background:#18243a; border:1px solid #2b3a5a; padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted)}
+  .badge{background:#f1f5ff; border:1px solid #d7e5ff; padding:6px 10px; border-radius:999px; font-size:12px; color:#365486}
   .mono{font-family: ui-monospace, Menlo, Consolas, 'Courier New', monospace;}
   .scroll-x{overflow:auto}
+
+  /* Barra de progreso clara */
+  #barAvance{ display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); width:0% }
 
   /* Mobile responsive nav */
   #btnMenu{ display:none }
@@ -72,17 +119,28 @@
     #btnMenu{ display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:10px; }
     nav{
       position:fixed; left:0; top:56px; height:calc(100vh - 56px); transform:translateX(-100%); transition:transform .25s ease;
-      width:80vw; max-width:320px; box-shadow: 0 18px 40px rgba(0,0,0,.45);
+      width:80vw; max-width:320px; box-shadow: 0 18px 40px rgba(0,0,0,.12); background:#fff;
     }
     body.show-nav nav{ transform:translateX(0) }
     #backdrop{
-      display:block; position:fixed; inset:56px 0 0 0; background:rgba(0,0,0,.45); backdrop-filter: blur(2px);
+      display:block; position:fixed; inset:56px 0 0 0; background:rgba(0,0,0,.2); backdrop-filter: blur(2px);
       opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:20;
     }
     body.show-nav #backdrop{ opacity:1; pointer-events:auto }
     main{ padding:14px }
     .col{min-width:100%}
   }
+
+  /* ---- HERO (imagen de inicio) ---- */
+  .hero{
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  }
+  .hero img{
+    width:100%; max-width:860px; border-radius:14px; border:1px solid var(--line);
+    box-shadow:0 12px 28px rgba(2,6,23,.06);
+    display:block;
+  }
+  .hero .lead{color:var(--muted); margin:0}
 </style>
 
 <!-- jsPDF + autoTable (CDN) -->
@@ -99,7 +157,7 @@
       <button class="btn ghost" id="btnDemo">Cargar demo</button>
       <button class="btn ghost" id="btnExport">Exportar JSON</button>
       <button class="btn ghost" id="btnImport">Importar JSON</button>
-      <button class="btn ghost" id="btnPDF">Exportar PDF</button>
+      <button class="btn primary" id="btnPDF">Exportar PDF</button>
       <button class="btn warn" id="btnReset">Reiniciar</button>
     </div>
   </header>
@@ -125,8 +183,8 @@
           <div style="display:flex; width:100%; align-items:center; gap:8px">
             <span class="pill">Avance general</span><span class="right badge mono" id="lblAvance">0%</span>
           </div>
-          <div style="width:100%; height:10px; background:#161b27; border-radius:999px; overflow:hidden; border:1px solid #25324a">
-            <span id="barAvance" style="display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); width:0%"></span>
+          <div style="width:100%; height:10px; background:#eef2f7; border-radius:999px; overflow:hidden; border:1px solid var(--btn-border)">
+            <span id="barAvance" style="width:0%"></span>
           </div>
         </div>
       </div>
@@ -138,8 +196,11 @@
     <main>
       <!-- INICIO -->
       <section class="panel view active" id="view-inicio">
-        <h2 style="margin-top:0">Bienvenido</h2>
-        <p>Demostración local con PDF y navegación móvil.</p>
+        <div class="hero">
+          <img src="https://i.imgur.com/gZdx2Gy.jpeg" alt="Ilustración Cadena de Ahorro">
+        </div>
+        <h2 style="margin:16px 0 6px">Bienvenido</h2>
+        <p class="lead">Demostración local con PDF y navegación móvil. Tema claro, colores suaves, imagen de portada integrada.</p>
       </section>
 
       <!-- INTEGRANTES -->
@@ -247,13 +308,15 @@
   </div>
 
 <script>
-// ---- helpers ----
+/* === Tu JS original sin cambios funcionales === */
+
+/* helpers */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const fmt = n => (n||0).toLocaleString('es-CO',{style:'currency',currency:'COP', maximumFractionDigits:0});
 const nnum = v => Math.max(0, Number(v||0));
 
-// ---- state ----
+/* state */
 const state = {
   integrantes: [],
   parametros: { nombre:'', periodicidad:'Semanal', inicio:'', nRecaudos:10, cuota:20000, admin:10000 },
@@ -262,14 +325,14 @@ const state = {
 function save(){ localStorage.setItem('cadena_demo_v31', JSON.stringify(state)); refreshKpis(); }
 function load(){ const raw = localStorage.getItem('cadena_demo_v31'); if(raw){ try{ Object.assign(state, JSON.parse(raw)); }catch(e){} }}
 
-// ---- responsive nav ----
+/* responsive nav */
 const toggleNav = () => document.body.classList.toggle('show-nav');
 document.addEventListener('click', (e)=>{
   if(e.target.id==='btnMenu'){ toggleNav(); }
   if(e.target.id==='backdrop'){ toggleNav(); }
 });
 
-// ---- navigation ----
+/* navigation */
 function show(view){
   $$('.view').forEach(v=> v.classList.remove('active'));
   $('#view-'+view).classList.add('active');
@@ -279,7 +342,7 @@ function show(view){
 }
 $$('.navbtn').forEach(b=> b.addEventListener('click', ()=> show(b.dataset.view)));
 
-// ---- integrantes ----
+/* integrantes */
 let editIndex = null;
 function renderIntegrantes(){
   const tb = $('#tblIntegrantes tbody'); tb.innerHTML = '';
@@ -360,7 +423,7 @@ document.addEventListener('click', (e)=>{
   if(e.target.id==='btnCancelInt') show('integrantes');
 });
 
-// ---- parámetros ----
+/* parámetros */
 function renderParametros(){
   const p = state.parametros;
   $('#p_nombre').value = p.nombre||'';
@@ -379,7 +442,6 @@ function guardarParametros(){
   p.nRecaudos = parseInt($('#p_nRecaudos').value||'10',10);
   p.cuota = nnum($('#p_cuota').value);
   p.admin = nnum($('#p_admin').value);
-  // ajustar pagos al nuevo tamaño
   for(const key of Object.keys(state.pagos)){
     const arr = state.pagos[key] || [];
     const n = p.nRecaudos;
@@ -391,12 +453,13 @@ function guardarParametros(){
   }
   renderProgramacion(); renderRegistro(); calcKPIs(); save();
 }
+document.addEventListener('change', (e)=>{
+  const ids = ['p_nombre','p_periodicidad','p_inicio','p_nRecaudos','p_cuota','p_admin'];
+  if(ids.includes(e.target.id)) guardarParametros();
+});
 document.addEventListener('click', (e)=>{
   if(e.target.id==='btnGuardarParametros') guardarParametros();
 });
-['#p_nombre','#p_periodicidad','#p_inicio','#p_nRecaudos','#p_cuota','#p_admin']
-  .forEach(sel => { document.addEventListener('change', (e)=>{ if('#'+e.target.id===sel) guardarParametros(); }); });
-
 function calcKPIs(){
   const p = state.parametros;
   const ahorro = p.nRecaudos * p.cuota;
@@ -407,7 +470,7 @@ function calcKPIs(){
   $('#kpiN').textContent = p.nRecaudos;
 }
 
-// ---- programación ----
+/* programación */
 function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function addWeeks(d,w){ return addDays(d, w*7); }
 function addMonths(d,m){ const x=new Date(d); x.setMonth(x.getMonth()+m); return x; }
@@ -441,7 +504,7 @@ document.addEventListener('click', (e)=>{
   }
 });
 
-// ---- registro ----
+/* registro */
 function renderRegistro(){
   const head=$('#regHead'), body=$('#regBody'); const p=state.parametros;
   head.innerHTML = '<th>#</th><th>Nombre</th>'+Array.from({length:p.nRecaudos},(_,i)=>`<th>R${i+1}</th>`).join('')+'<th>Valor cancelado</th><th>Comportamiento</th>';
@@ -476,14 +539,14 @@ document.addEventListener('click', (e)=>{
   }
 });
 
-// ---- KPIs ----
+/* KPIs */
 function refreshKpis(){
   $('#kpiIntegrantes').textContent = state.integrantes.length;
   $('#kpiCuota').textContent = fmt(state.parametros.cuota);
   $('#kpiN').textContent = state.parametros.nRecaudos;
 }
 
-// ---- I/O ----
+/* I/O */
 function exportJSON(){
   const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
   const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='cadena_demo.json'; a.click(); URL.revokeObjectURL(url);
@@ -503,7 +566,7 @@ function resetAll(){
   renderAll(); save();
 }
 
-// ---- demo rápida ----
+/* demo */
 function cargarDemo(){
   const hoy = new Date(); const yyyy=hoy.getFullYear(), mm=String(hoy.getMonth()+1).padStart(2,'0'), dd=String(hoy.getDate()).padStart(2,'0');
   state.parametros = { nombre:'S20x8', periodicidad:'Semanal', inicio:`${yyyy}-${mm}-${dd}`, nRecaudos:10, cuota:20000, admin:10000 };
@@ -518,30 +581,27 @@ function cargarDemo(){
   renderAll(); save();
 }
 
-// ---- PDF EXPORT ----
+/* PDF */
 async function exportPDF(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({unit:'pt', format:'a4'});
   const p = state.parametros;
 
-  // Título
   doc.setFontSize(16);
   doc.text("Reporte - Cadena de Ahorro", 40, 40);
   doc.setFontSize(11);
   doc.text(`Nombre: ${p.nombre || '—'}`, 40, 60);
   doc.text(`Periodicidad: ${p.periodicidad}`, 40, 76);
   doc.text(`# Recaudos: ${p.nRecaudos}`, 40, 92);
-  doc.text(`Cuota: ${fmt(p.cuota)}`, 250, 60);
-  doc.text(`Aporte admin: ${fmt(p.admin)}`, 250, 76);
+  doc.text(`Cuota: ${(p.cuota||0).toLocaleString('es-CO',{style:'currency',currency:'COP', maximumFractionDigits:0})}`, 250, 60);
+  doc.text(`Aporte admin: ${(p.admin||0).toLocaleString('es-CO',{style:'currency',currency:'COP', maximumFractionDigits:0})}`, 250, 76);
   doc.text(`Inicio: ${p.inicio || '—'}`, 250, 92);
 
-  // KPIs
   const ahorro = p.nRecaudos * p.cuota;
   const entrega = Math.max(0, ahorro - p.admin);
-  doc.text(`Ahorro total: ${fmt(ahorro)}`, 420, 60);
-  doc.text(`Entrega: ${fmt(entrega)}`, 420, 76);
+  doc.text(`Ahorro total: ${(ahorro).toLocaleString('es-CO')}`, 420, 60);
+  doc.text(`Entrega: ${(entrega).toLocaleString('es-CO')}`, 420, 76);
 
-  // Tabla Integrantes
   const integrantesHead = [['#','Nombre','ID','Celular','Negocio','Ant','Ingresos','Gastos']];
   const integrantesBody = state.integrantes.map((it,i)=>[
     i+1, it.nombre||'', it.cc||'', it.celular||'', it.negocio||'', it.antiguedad||0,
@@ -556,13 +616,12 @@ async function exportPDF(){
     margin: {left:40, right:40}
   });
 
-  // Página nueva: Registro
   doc.addPage('a4','landscape');
   const headRegistro = [['#','Nombre', ...Array.from({length:p.nRecaudos},(_,i)=>`R${i+1}`), 'Valor Cancelado', '% Perso.']];
   const registroBody = state.integrantes.map((it,i)=>{
     const key = it.cc; const arr = (state.pagos[key]||Array(p.nRecaudos).fill(0));
     const sum = arr.reduce((a,b)=>a+b,0);
-    const row = [i+1, it.nombre, ...arr.map(v=> v>0?'✔':'') , (sum).toLocaleString('es-CO'), Math.round(100*sum/(p.nRecaudos*p.cuota || 1))+'%'];
+    const row = [i+1, it.nombre, ...arr.map(v=> v>0?'✔':''), (sum).toLocaleString('es-CO'), Math.round(100*sum/(p.nRecaudos*p.cuota || 1))+'%'];
     return row;
   });
   doc.autoTable({
@@ -573,7 +632,6 @@ async function exportPDF(){
     margin: {left:24, right:24}
   });
 
-  // Programación (fechas)
   const fs = (function(){
     if(!p.inicio) return [];
     const base = new Date(p.inicio+'T00:00:00'); const out=[];
@@ -599,7 +657,6 @@ async function exportPDF(){
     margin: {left:24, right:24}
   });
 
-  // Guardar
   const nombre = (p.nombre || 'cadena').toLowerCase().replace(/\s+/g,'_');
   doc.save(`reporte_${nombre}.pdf`);
 }
@@ -607,7 +664,7 @@ document.addEventListener('click', (e)=>{
   if(e.target.id==='btnPDF') exportPDF();
 });
 
-// ---- binds topbar ----
+/* binds topbar */
 document.addEventListener('click', (e)=>{
   if(e.target.id==='btnExport') exportJSON();
   if(e.target.id==='btnImport') importJSON();
@@ -615,11 +672,10 @@ document.addEventListener('click', (e)=>{
   if(e.target.id==='btnDemo') cargarDemo();
 });
 
-// ---- render ----
+/* render */
 function renderAll(){ renderIntegrantes(); renderParametros(); renderProgramacion(); renderRegistro(); }
 function init(){ load(); renderAll(); }
 init();
 </script>
 </body>
 </html>
-
